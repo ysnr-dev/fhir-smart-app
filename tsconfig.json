@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/scores" },
+    { "path": "apps/web" }
+  ]
+}

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: fhir-smart-app
+    runtime: static
+    buildCommand: npm ci && npm run build
+    staticPublishPath: apps/web/dist
+    headers:
+      - path: /*
+        name: Content-Security-Policy
+        value: frame-ancestors https://ysnr-fhir-client.onrender.com
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+    routes:
+      - type: rewrite
+        source: /launch
+        destination: /launch.html
