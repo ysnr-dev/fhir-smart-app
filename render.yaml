@@ -15,3 +15,16 @@ services:
       - type: rewrite
         source: /launch
         destination: /launch.html
+  - type: web
+    name: fhir-smart-app-cds
+    runtime: node
+    buildCommand: npm ci && npm run build -w apps/cds
+    startCommand: node apps/cds/dist/server.js
+    healthCheckPath: /cds-services
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: CDS_AUTH_TOKEN
+        sync: false
+      - key: SMART_APP_LAUNCH_URL
+        sync: false

@@ -1,8 +1,5 @@
 /**
- * 計算式の入力に使うリソースをまとめて読む。
- *
- * 完全一致のコード(LOINC など)は `code=` のカンマ OR で、前方一致のコード(JLAC の分析物)は
- * 検体検査のカテゴリで読んで手元で照合する。どちらも新しい順に上限件数まで。
+ * 計算式の入力に使うリソースをまとめて読む。検索の組み立ては CDS サービスの prefetch と共通。
  */
 import { type PatientData } from "@fhir-smart-app/scores";
 import type Client from "fhirclient/Client";

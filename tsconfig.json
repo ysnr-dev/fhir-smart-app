@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/scores" },
-    { "path": "apps/web" }
+    { "path": "apps/web" },
+    { "path": "apps/cds" }
   ]
 }

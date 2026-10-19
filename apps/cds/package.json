@@ -1,0 +1,20 @@
+{
+  "name": "@fhir-smart-app/cds",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "esbuild src/server.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/server.js",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@fhir-smart-app/scores": "*"
+  },
+  "devDependencies": {
+    "@types/fhir": "^0.0.44",
+    "@types/node": "^22.19.0",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15"
+  }
+}
