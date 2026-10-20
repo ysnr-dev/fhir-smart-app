@@ -17,6 +17,8 @@ apps/web/          Vite + React の SMART アプリ。launch.html(起動)→ ind
 apps/cds/          CDS Hooks サービス(Node の標準ライブラリだけ。esbuild で 1 ファイルにまとめる)
 ```
 
+認証・認可とデータ取得の流れは [docs/auth-and-data-flow.md](docs/auth-and-data-flow.md) に図でまとめている。
+
 計算式と FHIR 検索(`packages/scores/src/queries.ts`)は両方の入口で共有する。SMART アプリは実際の患者 id で検索し、
 CDS サービスは同じ検索を prefetch のテンプレート(`{{context.patientId}}`)として discovery に載せる。
 
