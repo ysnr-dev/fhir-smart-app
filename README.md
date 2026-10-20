@@ -95,8 +95,13 @@ EHR への登録: カルテの管理 > CDS サービス に URL を登録する�
 
 - `category` = `survey`、`code` は計算式ごと(eGFR は LOINC 69405-9、CHA₂DS₂-VASc と qSOFA は LOINC に無いので `http://fhir-smart-app.local/CodeSystem/score`)
 - `subject` は起動時の患者、`encounter` は launch で渡った受診、`performer` は `fhirUser`
-- `derivedFrom` に元にした Observation、`note` に解釈と内訳
+- `interpretation[].text` に解釈(「G4」「高リスク」など)、`derivedFrom` に元にした Observation、`note` に解釈と内訳
 - 「登録」ボタンは付与されたスコープに Observation の作成が含まれるときだけ出す
+- 同じ日に同じ値をすでに登録していれば「登録済」で押せない。入力を直して値が変われば登録できる
+
+各タブには、書き戻した結果を `category=survey` と計算式のコードで読み返し、前回値と直近 10 件の履歴を出す
+(`packages/scores/src/history.ts`)。解釈は `interpretation` が無い古い記録では `note` の 1 行目から読む。
+取消(`entered-in-error`)になった記録は出さない。
 
 ## EHR 側の制約(fhir-client の `docs/smart-app-launch-design.md`)
 

@@ -2,13 +2,13 @@ import { SCORES, type PatientData } from "@fhir-smart-app/scores";
 import { useEffect, useState } from "react";
 import { PatientBanner } from "./components/PatientBanner";
 import { ScorePanel } from "./components/ScorePanel";
-import { loadPatientData } from "./fhir/load";
+import { loadPatient } from "./fhir/load";
 import { isLaunchError, readySession, type SmartSession } from "./smart/session";
 
 type State =
   | { phase: "loading" }
   | { phase: "error"; message: string; relaunch: boolean }
-  | { phase: "ready"; session: SmartSession; data: PatientData };
+  | { phase: "ready"; session: SmartSession; data: PatientData; history: fhir4.Observation[] };
 
 /** appContext(CDS Hooks のカードから渡る JSON)に `score` があれば、そのタブを最初に開く。 */
 function initialScoreId(appContext: string | null): string {
@@ -30,10 +30,10 @@ export function App() {
     (async () => {
       try {
         const session = await readySession();
-        const data = await loadPatientData(session.client, session.patientId);
+        const { data, history } = await loadPatient(session.client, session.patientId);
         if (cancelled) return;
         setScoreId(initialScoreId(session.appContext));
-        setState({ phase: "ready", session, data });
+        setState({ phase: "ready", session, data, history });
       } catch (error) {
         if (cancelled) return;
         setState({ phase: "error", message: String(error), relaunch: isLaunchError(error) });
@@ -60,7 +60,9 @@ export function App() {
     );
   }
 
-  const { session, data } = state;
+  const { session, data, history } = state;
+  const addToHistory = (observation: fhir4.Observation) =>
+    setState((prev) => (prev.phase === "ready" ? { ...prev, history: [observation, ...prev.history] } : prev));
   const score = SCORES.find((s) => s.id === scoreId) ?? SCORES[0]!;
   return (
     <main className="app">
@@ -72,7 +74,14 @@ export function App() {
           </button>
         ))}
       </div>
-      <ScorePanel key={`${score.id}:${session.patientId}`} score={score} session={session} data={data} />
+      <ScorePanel
+        key={`${score.id}:${session.patientId}`}
+        score={score}
+        session={session}
+        data={data}
+        history={history}
+        onSaved={addToHistory}
+      />
     </main>
   );
 }

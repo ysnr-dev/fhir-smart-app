@@ -8,20 +8,8 @@ import {
   type ScoreResult,
 } from "@fhir-smart-app/scores";
 import type Client from "fhirclient/Client";
+import { nowFhirDateTime } from "../dates";
 import type { SmartSession } from "../smart/session";
-
-/** オフセット付きの現在時刻(`2026-10-19T10:00:00+09:00`)。 */
-export function nowFhirDateTime(now = new Date()): string {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  const offset = -now.getTimezoneOffset();
-  const sign = offset >= 0 ? "+" : "-";
-  const hh = pad(Math.floor(Math.abs(offset) / 60));
-  const mm = pad(Math.abs(offset) % 60);
-  return (
-    `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}` +
-    `T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}${sign}${hh}:${mm}`
-  );
-}
 
 export function buildObservation(
   score: ScoreDefinition,
@@ -46,6 +34,7 @@ export function buildObservation(
     ...(result.unit
       ? { valueQuantity: { value: result.value, unit: result.unit, system: "http://unitsofmeasure.org", code: result.unit } }
       : { valueInteger: result.value }),
+    interpretation: [{ text: result.interpretation }],
     note: [{ text: noteLines.join("\n") }],
     ...(derivedFrom.length ? { derivedFrom } : {}),
   };

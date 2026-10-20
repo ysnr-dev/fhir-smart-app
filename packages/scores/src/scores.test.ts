@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { cha2ds2vasc } from "./cha2ds2vasc";
 import { ICD10_SYSTEMS, JLAC11, LOINC } from "./codes";
 import { egfr } from "./egfr";
+import { scoreHistory, scoreHistoryQuery } from "./history";
 import { qsofa } from "./qsofa";
 import { ageAt, resolveInputs } from "./resolve";
 
@@ -116,5 +117,30 @@ describe("qSOFA", () => {
     const result = qsofa.compute(values);
     expect(result.value).toBe(3);
     expect(result.interpretation).toMatch(/高リスク/);
+  });
+});
+
+describe("scoreHistory", () => {
+  it("計算式のコードで振り分け、新しい順に並べ、解釈は interpretation か note の 1 行目から読む", () => {
+    const written = (code: fhir4.Coding, at: string, extra: Partial<fhir4.Observation>): fhir4.Observation => ({
+      resourceType: "Observation",
+      status: "final",
+      code: { coding: [code] },
+      effectiveDateTime: at,
+      ...extra,
+    });
+    const observations = [
+      written(egfr.observation, "2026-10-01T10:00:00+09:00", { valueQuantity: { value: 50, unit: "mL/min/{1.73_m2}" }, note: [{ text: "G3a\n内訳" }] }),
+      written(egfr.observation, "2026-10-19T10:00:00+09:00", { valueQuantity: { value: 40 }, interpretation: [{ text: "G3b" }] }),
+      written(egfr.observation, "2026-10-10T10:00:00+09:00", { status: "entered-in-error", valueQuantity: { value: 99 } }),
+      written(qsofa.observation, "2026-10-19T11:00:00+09:00", { valueInteger: 2 }),
+    ];
+    const entries = scoreHistory(observations, egfr);
+    expect(entries.map((e) => [e.value, e.interpretation])).toEqual([
+      [40, "G3b"],
+      [50, "G3a"],
+    ]);
+    expect(scoreHistory(observations, qsofa)[0]).toMatchObject({ value: 2, unit: undefined });
+    expect(decodeURIComponent(scoreHistoryQuery("p1", 100))).toContain("category=http://terminology.hl7.org/CodeSystem/observation-category|survey");
   });
 });

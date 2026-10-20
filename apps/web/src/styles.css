@@ -212,3 +212,36 @@ button.primary:disabled {
   color: var(--muted);
   margin-top: 8px;
 }
+
+.previous {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.history {
+  grid-column: 1 / -1;
+}
+
+.history h2 {
+  font-size: 14px;
+  margin: 4px 0 6px;
+}
+
+.history table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.history th,
+.history td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 13px;
+}
+
+.history th {
+  color: var(--muted);
+  font-weight: 400;
+}
