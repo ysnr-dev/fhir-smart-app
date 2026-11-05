@@ -23,7 +23,7 @@ services:
     healthCheckPath: /cds-services
     envVars:
       - key: NODE_VERSION
-        value: "22"
+        value: "26"
       - key: CDS_AUTH_TOKEN
         sync: false
       - key: SMART_APP_LAUNCH_URL

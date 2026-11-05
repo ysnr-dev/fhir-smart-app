@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@types/fhir": "^0.0.44",
-    "@types/node": "^22.19.0",
+    "@types/node": "^26.6.6",
     "esbuild": "^0.28.2",
     "tsx": "^4.23.15"
   }

@@ -24,7 +24,7 @@ CDS サービスは同じ検索を prefetch のテンプレート(`{{context.pat
 
 ## 開発
 
-Node 22(`.node-version`)。EHR(fhir-client)と上流(fhir-server)が Docker で動いている前提。
+Node 26(`.node-version`)。EHR(fhir-client)と上流(fhir-server)が Docker で動いている前提。
 
 ```bash
 npm install
